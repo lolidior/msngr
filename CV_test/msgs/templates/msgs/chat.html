@@ -1,0 +1,79 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'msgs/css/chat.css' %}" xmlns="http://www.w3.org/1999/html">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script type="text/javascript" src={% static "msgs/js/chat.js" %}></script>
+{% endblock %}
+{% block content %}
+<div class="chattin">
+  <form method="post">
+  <div class="msgtxt"><li>{{ user.username }}</li>
+    {% csrf_token %}
+
+
+    {{ form.send.as_hidden }}
+    {{ form.take.as_hidden }}
+    {{ form.send_date.as_hidden }}
+    {{ form.msg_txt }}
+
+    <button class="btn btn-send" id="btn-send"><i class="bi bi-send-fill"></i></button><br>
+    <script type="text/javascript">
+      var take = document.getElementById('id_take');
+      let params = new URLSearchParams(document.location.search);
+      let real_take = params.get('im');
+      take.value = real_take;
+      function send_date(){
+        var send_dt = document.getElementById('id_send_date');
+        send_dt.value = Date.now()
+      }
+
+
+
+      var bttn = document.getElementById('btn-send');
+      bttn.onclick = send_date
+    </script>
+    <span>{{ error }}</span>
+  </div>
+  </form>
+  <div style="height: 40px"></div>
+
+  <form method="post" id="soob">
+    {% for el in msgs %}
+      {% if el.send == user.get_username and el.take == im or el.send == im and el.take == user.get_username %}
+      {% if el.send == user.get_username and el.take == im %}
+    <p class="msgviewr">{{ el }}</p>
+      {% else %}
+      <p class="msgviewl">{{ el }}</p>
+      {% endif %}
+      {% endif %}
+    {% endfor %}
+
+  </form>
+
+</div>
+<div style="position: absolute; float: left; color: #fff; margin-top: -500px; margin-left: 20px">
+
+      {% for userss in users %}
+  <button class="btn btn-send btn-take"  onclick="settaker(this)">{{ userss.username }}</button><br><br>
+      {% endfor %}
+
+    </div>
+<script type="text/javascript">
+
+
+  function bg_btn(){
+        var bttns = document.getElementsByClassName('btn btn-send btn-take');
+        for (let ch = 0; ch < bttns.length; ch++){
+          if (bttns[ch].innerText == real_take){
+            bttns[ch].style = "background: #dd1133; border-color: #fff"
+          }
+        }
+      }
+  setInterval(function () {
+  $("#soob").load(location.href+" #soob>*",""); bg_btn();
+  }, 1000);
+</script>
+{% endblock %}

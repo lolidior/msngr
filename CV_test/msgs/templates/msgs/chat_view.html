@@ -1,0 +1,14 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}{{ msgs.take }}{% endblock %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'msgs/css/chat.css' %}" xmlns="http://www.w3.org/1999/html">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script type="text/javascript" src={% static "msgs/js/chat.js" %}></script>
+{% endblock %}
+{% block content %}
+{% for el in msgs %}
+<p>{{ el.take }}</p><br>
+{% endfor %}
+{% endblock %}
